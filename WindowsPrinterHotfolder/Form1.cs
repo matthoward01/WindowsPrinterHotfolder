@@ -24,32 +24,38 @@ namespace WindowsPrinterHotfolder
         {
             InitializeComponent();
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+            SettingCheck();
+            MainTimer.Tick += new EventHandler(hotFolderParse);
+        }
+
+        private void SettingCheck()
+        {
+            StartButton.Enabled = true;
             if (!Directory.Exists(Settings.Default.TempFolder))
             {
-                try
-                {
-                    Directory.CreateDirectory(Settings.Default.TempFolder);
-                }
+                StartButton.Enabled = false;
+                MainRichTextBox.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
+                MainRichTextBox.AppendText(DateTime.Now + " | " + "Set Temp Folder...\r\n", Color.Black, FontStyle.Regular);
+                MainRichTextBox.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
 
-                catch (IOException ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
             }
             if (!Directory.Exists(Settings.Default.HotFolder))
             {
-                try
-                {
-                    Directory.CreateDirectory(Settings.Default.HotFolder);
-                }
+                StartButton.Enabled = false;
+                MainRichTextBox.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
+                MainRichTextBox.AppendText(DateTime.Now + " | " + "Set HotFolder...\r\n", Color.Black, FontStyle.Regular);
+                MainRichTextBox.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
 
-                catch (IOException ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
             }
-            MainTimer.Tick += new EventHandler(hotFolderParse);
+            if (Settings.Default.Printer.Equals(""))
+            {
+                StartButton.Enabled = false;
+                MainRichTextBox.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
+                MainRichTextBox.AppendText(DateTime.Now + " | " + "Set Printer...\r\n", Color.Black, FontStyle.Regular);
+                MainRichTextBox.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
+            }
         }
+
         private void hotFolderParse(Object source, EventArgs e)
         {
             MainTimer.Stop();
@@ -307,6 +313,7 @@ namespace WindowsPrinterHotfolder
             Settings.Default.Save();
             SettingsPanel.Enabled = false;
             SettingsPanel.Visible = false;
+            SettingCheck();
             MainRichTextBox.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
             MainRichTextBox.AppendText(DateTime.Now + " | " + "Settings Saved...\r\n", Color.Black, FontStyle.Regular);
             MainRichTextBox.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
@@ -341,6 +348,7 @@ namespace WindowsPrinterHotfolder
             ClearButton.Visible = false;
             StartButton.Visible = false;
             StopButton.Visible = true;
+            StopButton.Enabled = true;
             SettingButton.Enabled = false;
 
             MainRichTextBox.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
@@ -354,9 +362,11 @@ namespace WindowsPrinterHotfolder
             ClearButton.Enabled = true;
             ClearButton.Visible = true;
             StopButton.Visible = false;
+            StopButton.Enabled = false;
             StartButton.Visible = true;
+            StartButton.Enabled = true;
             SettingButton.Enabled = true;
-
+            MainBGW.CancelAsync();
             MainRichTextBox.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
             MainRichTextBox.AppendText(DateTime.Now + " | HotFolder Parsing Stopped...\r\n", Color.Black, FontStyle.Regular);
             MainRichTextBox.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);

@@ -68,12 +68,14 @@
             // 
             // StopButton
             // 
+            this.StopButton.Enabled = false;
             this.StopButton.Location = new System.Drawing.Point(321, 9);
             this.StopButton.Name = "StopButton";
             this.StopButton.Size = new System.Drawing.Size(220, 23);
             this.StopButton.TabIndex = 1;
             this.StopButton.Text = "Stop";
             this.StopButton.UseVisualStyleBackColor = true;
+            this.StopButton.Visible = false;
             this.StopButton.Click += new System.EventHandler(this.StopButton_Click);
             // 
             // ClearButton
@@ -253,7 +255,7 @@
             this.Controls.Add(this.StartButton);
             this.MaximizeBox = false;
             this.Name = "Form1";
-            this.Text = "Windows Printer Hotfolder";
+            this.Text = "WindowsPrinterHotfolder";
             this.SettingsPanel.ResumeLayout(false);
             this.SettingsPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
