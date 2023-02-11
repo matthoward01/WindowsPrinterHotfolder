@@ -11,14 +11,81 @@ using Ghostscript.NET.Processor;
 using WindowsPrinterHotfolder.Properties;
 using System.Drawing.Printing;
 using System.DirectoryServices.ActiveDirectory;
+using static iTextSharp.text.pdf.PdfDocument;
+using System.Runtime;
 
 namespace WindowsPrinterHotfolder
 {
     public partial class Form1 : Form
     {
+        List<string> hotfolderFiles = new();
+
         public Form1()
         {
             InitializeComponent();
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+            if (!Directory.Exists(Settings.Default.TempFolder))
+            {
+                try
+                {
+                    Directory.CreateDirectory(Settings.Default.TempFolder);
+                }
+
+                catch (IOException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+            if (!Directory.Exists(Settings.Default.HotFolder))
+            {
+                try
+                {
+                    Directory.CreateDirectory(Settings.Default.HotFolder);
+                }
+
+                catch (IOException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+            MainTimer.Tick += new EventHandler(hotFolderParse);
+        }
+        private void hotFolderParse(Object source, EventArgs e)
+        {
+            MainTimer.Stop();
+            hotfolderFiles = new();
+            try
+            {
+                DirectoryInfo dinfo = new DirectoryInfo(Settings.Default.HotFolder);
+                FileInfo[] Files = dinfo.GetFiles("*.pdf").ToArray();
+
+                foreach (FileInfo file in Files)
+                {
+                    hotfolderFiles.Add(file.Name);
+                }
+
+                for (int i = 0; i < hotfolderFiles.Count; i++)
+                {
+                    MainRichTextBox.AppendText(DateTime.Now + " | Added file: " + hotfolderFiles[i] + "\r\n", Color.Black, FontStyle.Regular);
+                }
+
+                MainTimer.Stop();
+
+                if (hotfolderFiles.Count != 0 && !MainBGW.IsBusy)
+                {
+                    object[] hotfolderArgs = { hotfolderFiles.ToArray(), hotfolderFiles.Count() };
+                    MainBGW.RunWorkerAsync(hotfolderArgs);
+                    hotfolderFiles.Clear();
+                }
+
+                MainTimer.Start();
+            }
+            catch (Exception ex)
+            {
+                MainRichTextBox.AppendText(DateTime.Now + " | " + ex.Message + "\r\n", Color.Red, FontStyle.Regular);
+                hotfolderFiles.Clear();
+                MainTimer.Start();
+            }
         }
 
         public void MakePrintPdf(string passedFile)
@@ -27,7 +94,7 @@ namespace WindowsPrinterHotfolder
             //passedFile = Settings.Default.hotFolder + "\\" + passedFile;         
             string gillRFont = "Fonts\\GIL_____.TTF";
             BaseFont GillSansR = BaseFont.CreateFont(gillRFont, BaseFont.CP1252, BaseFont.EMBEDDED);
-            FileStream fs1 = new FileStream(Path.GetFileName(passedFile), FileMode.Create, FileAccess.Write, FileShare.None);
+            FileStream fs1 = new FileStream(Path.Combine(Settings.Default.TempFolder, Path.GetFileName(passedFile)), FileMode.Create, FileAccess.Write, FileShare.None);
             Document doc1 = new Document();
             PdfReader inputFile = new PdfReader(passedFile);
             PdfWriter writer1 = PdfWriter.GetInstance(doc1, fs1);
@@ -132,12 +199,12 @@ namespace WindowsPrinterHotfolder
             }
             doc1.Close();
 
-            SendToPrinter(Settings.Default.TempFolder + "\\" + Path.GetFileName(passedFile), false, tabloid);
+            SendToPrinter(Path.Combine(Settings.Default.TempFolder, Path.GetFileName(passedFile)), false, tabloid);
 
         }
         public void SendToPrinter(string printFile, bool fit, bool tabloid)
         {            
-            GhostscriptVersionInfo gvi = new GhostscriptVersionInfo(new Version(0, 0, 0), System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "gsdll32.dll"), string.Empty, GhostscriptLicense.GPL);
+            GhostscriptVersionInfo gvi = new GhostscriptVersionInfo(new Version(0, 0, 0), System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "References", "gsdll64.dll"), string.Empty, GhostscriptLicense.GPL);
             using (GhostscriptProcessor processor = new GhostscriptProcessor(gvi))
             {
                 List<string> switches = new List<string>();
@@ -240,6 +307,9 @@ namespace WindowsPrinterHotfolder
             Settings.Default.Save();
             SettingsPanel.Enabled = false;
             SettingsPanel.Visible = false;
+            MainRichTextBox.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
+            MainRichTextBox.AppendText(DateTime.Now + " | " + "Settings Saved...\r\n", Color.Black, FontStyle.Regular);
+            MainRichTextBox.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
         }
 
         private void WatchedFolderButton_Click(object sender, EventArgs e)
@@ -263,6 +333,99 @@ namespace WindowsPrinterHotfolder
                 MainRichTextBox.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
             }
 
+        }
+
+        private void StartButton_Click(object sender, EventArgs e)
+        {
+            ClearButton.Enabled = false;
+            ClearButton.Visible = false;
+            StartButton.Visible = false;
+            StopButton.Visible = true;
+            SettingButton.Enabled = false;
+
+            MainRichTextBox.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
+            MainRichTextBox.AppendText(DateTime.Now + " | HotFolder Parsing Started...\r\n", Color.Black, FontStyle.Regular);
+            MainRichTextBox.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
+            MainTimer.Start();
+        }
+
+        private void StopButton_Click(object sender, EventArgs e)
+        {            
+            ClearButton.Enabled = true;
+            ClearButton.Visible = true;
+            StopButton.Visible = false;
+            StartButton.Visible = true;
+            SettingButton.Enabled = true;
+
+            MainRichTextBox.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
+            MainRichTextBox.AppendText(DateTime.Now + " | HotFolder Parsing Stopped...\r\n", Color.Black, FontStyle.Regular);
+            MainRichTextBox.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
+            MainTimer.Stop();
+        }
+
+        private void MainBGW_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+            Invoke(new Action(() => { MainProgressBar.Value = 0; }));
+            MainTimer.Stop();
+            object[] arg = e.Argument as object[];
+            string[] passedArray = (string[])arg[0];
+            List<string> passedList = passedArray.ToList();
+            int fileProgressStep = (int)Math.Ceiling(((double)100) / (int)arg[1]);
+
+            foreach (string runfile in passedList)
+            {
+                try
+                {
+                    MakePrintPdf(Path.Combine(Settings.Default.HotFolder, runfile));
+
+                    if (File.Exists(Path.Combine(Settings.Default.HotFolder, runfile)))
+                    {
+                        File.Delete(Path.Combine(Settings.Default.HotFolder, runfile));
+                    }
+
+                    MainBGW.ReportProgress(fileProgressStep);
+                }
+                catch (Exception workerError)
+                {
+                    Invoke(new Action(() => { MainRichTextBox.AppendText(DateTime.Now + " | " + workerError.Message + ". \r\n", Color.Red, FontStyle.Regular); }));
+                    MainBGW.ReportProgress(fileProgressStep);
+                }
+
+                if (passedList.Count > 0)
+                {
+                    e.Result = "Done";
+                }
+            }
+
+        }
+
+        private void MainBGW_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
+        {
+            MainProgressBar.Step = e.ProgressPercentage;
+            MainProgressBar.PerformStep();
+        }
+
+        private void MainBGW_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        {
+            if (e.Error != null)
+            {
+                Invoke(new Action(() => { MainRichTextBox.AppendText(DateTime.Now + " | " + (string)e.Error.Message + "Error. \r\n\r\n", Color.Red, FontStyle.Regular); }));
+                MainTimer.Start();
+            }
+            else
+            {
+                if ((string)e.Result == "Done")
+                {
+                    Invoke(new Action(() => { MainRichTextBox.AppendText(DateTime.Now + " | " + "Files Processed. \r\n\r\n", Color.Black, FontStyle.Regular); }));
+                }
+                MainTimer.Start();
+            }
+        }
+
+        private void MainRichTextBox_TextChanged(object sender, EventArgs e)
+        {
+            MainRichTextBox.SelectionStart = MainRichTextBox.Text.Length;
+            MainRichTextBox.ScrollToCaret();
         }
     }
 

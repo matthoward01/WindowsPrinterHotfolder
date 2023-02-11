@@ -9,6 +9,26 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="References\Ghostscript.NET.dll" />
+    <None Remove="References\gsdll64.dll" />
+    <None Remove="References\itextsharp.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="References\gsdll64.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="References\itextsharp.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Ghostscript.NET" Version="1.2.3" />
+    <PackageReference Include="GhostScriptSharp" Version="1.3.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="Ghostscript.NET">
       <HintPath>References\Ghostscript.NET.dll</HintPath>
     </Reference>

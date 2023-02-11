@@ -33,7 +33,7 @@
             this.StopButton = new System.Windows.Forms.Button();
             this.ClearButton = new System.Windows.Forms.Button();
             this.MainRichTextBox = new System.Windows.Forms.RichTextBox();
-            this.pbOverall = new System.Windows.Forms.ProgressBar();
+            this.MainProgressBar = new System.Windows.Forms.ProgressBar();
             this.SettingButton = new System.Windows.Forms.Button();
             this.SettingsPanel = new System.Windows.Forms.Panel();
             this.CancelButton = new System.Windows.Forms.Button();
@@ -47,10 +47,11 @@
             this.PrinterListComboBox = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.TempFolderTextBox = new System.Windows.Forms.TextBox();
-            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.MainBGW = new System.ComponentModel.BackgroundWorker();
             this.WatchedFolderDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.TempFolderDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
+            this.MainTimer = new System.Windows.Forms.Timer(this.components);
             this.SettingsPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
             this.SuspendLayout();
@@ -63,6 +64,7 @@
             this.StartButton.TabIndex = 0;
             this.StartButton.Text = "Start";
             this.StartButton.UseVisualStyleBackColor = true;
+            this.StartButton.Click += new System.EventHandler(this.StartButton_Click);
             // 
             // StopButton
             // 
@@ -72,6 +74,7 @@
             this.StopButton.TabIndex = 1;
             this.StopButton.Text = "Stop";
             this.StopButton.UseVisualStyleBackColor = true;
+            this.StopButton.Click += new System.EventHandler(this.StopButton_Click);
             // 
             // ClearButton
             // 
@@ -90,13 +93,14 @@
             this.MainRichTextBox.Size = new System.Drawing.Size(610, 255);
             this.MainRichTextBox.TabIndex = 3;
             this.MainRichTextBox.Text = "";
+            this.MainRichTextBox.TextChanged += new System.EventHandler(this.MainRichTextBox_TextChanged);
             // 
-            // pbOverall
+            // MainProgressBar
             // 
-            this.pbOverall.Location = new System.Drawing.Point(12, 302);
-            this.pbOverall.Name = "pbOverall";
-            this.pbOverall.Size = new System.Drawing.Size(610, 23);
-            this.pbOverall.TabIndex = 4;
+            this.MainProgressBar.Location = new System.Drawing.Point(12, 302);
+            this.MainProgressBar.Name = "MainProgressBar";
+            this.MainProgressBar.Size = new System.Drawing.Size(610, 23);
+            this.MainProgressBar.TabIndex = 4;
             // 
             // SettingButton
             // 
@@ -227,6 +231,14 @@
             this.TempFolderTextBox.Size = new System.Drawing.Size(454, 23);
             this.TempFolderTextBox.TabIndex = 0;
             // 
+            // MainBGW
+            // 
+            this.MainBGW.WorkerReportsProgress = true;
+            this.MainBGW.WorkerSupportsCancellation = true;
+            this.MainBGW.DoWork += new System.ComponentModel.DoWorkEventHandler(this.MainBGW_DoWork);
+            this.MainBGW.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.MainBGW_ProgressChanged);
+            this.MainBGW.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.MainBGW_RunWorkerCompleted);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -234,7 +246,7 @@
             this.ClientSize = new System.Drawing.Size(634, 340);
             this.Controls.Add(this.SettingsPanel);
             this.Controls.Add(this.SettingButton);
-            this.Controls.Add(this.pbOverall);
+            this.Controls.Add(this.MainProgressBar);
             this.Controls.Add(this.MainRichTextBox);
             this.Controls.Add(this.ClearButton);
             this.Controls.Add(this.StopButton);
@@ -255,14 +267,14 @@
         private Button StopButton;
         private Button ClearButton;
         private RichTextBox MainRichTextBox;
-        private ProgressBar pbOverall;
+        private ProgressBar MainProgressBar;
         private Button SettingButton;
         private Panel SettingsPanel;
         private CheckBox AllowTabloidCheckBox;
         private ComboBox PrinterListComboBox;
         private Label label1;
         private TextBox TempFolderTextBox;
-        private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.ComponentModel.BackgroundWorker MainBGW;
         private Label label2;
         private Button TempFolderButton;
         private Button WatchedFolderButton;
@@ -273,5 +285,6 @@
         private FolderBrowserDialog WatchedFolderDialog;
         private FolderBrowserDialog TempFolderDialog;
         private BindingSource bindingSource1;
+        private System.Windows.Forms.Timer MainTimer;
     }
 }
