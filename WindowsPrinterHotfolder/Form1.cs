@@ -9,6 +9,8 @@ using System.Drawing;
 using Ghostscript.NET;
 using Ghostscript.NET.Processor;
 using WindowsPrinterHotfolder.Properties;
+using System.Drawing.Printing;
+using System.DirectoryServices.ActiveDirectory;
 
 namespace WindowsPrinterHotfolder
 {
@@ -18,7 +20,8 @@ namespace WindowsPrinterHotfolder
         {
             InitializeComponent();
         }
-        public void PreflightPdfPrint(string passedFile)
+
+        public void MakePrintPdf(string passedFile)
         {
             Form mainForm = new Form1();
             //passedFile = Settings.Default.hotFolder + "\\" + passedFile;         
@@ -129,10 +132,10 @@ namespace WindowsPrinterHotfolder
             }
             doc1.Close();
 
-            SendToPrinter(Settings.Default.tempFolder + "\\" + Path.GetFileName(passedFile), false, tabloid);
+            SendToPrinter(Settings.Default.TempFolder + "\\" + Path.GetFileName(passedFile), false, tabloid);
 
         }
-        public void SendToPrinter(string printFile, bool ticket, bool tabloid)
+        public void SendToPrinter(string printFile, bool fit, bool tabloid)
         {            
             GhostscriptVersionInfo gvi = new GhostscriptVersionInfo(new Version(0, 0, 0), System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "gsdll32.dll"), string.Empty, GhostscriptLicense.GPL);
             using (GhostscriptProcessor processor = new GhostscriptProcessor(gvi))
@@ -146,18 +149,133 @@ namespace WindowsPrinterHotfolder
                 {
                     switches.Add("-g792x1224");
                 }
-                if (ticket)
+                if (fit)
                 {
                     switches.Add("-dPDFFitPage");
 
                 }
                 switches.Add("-dNumCopies=1");
                 switches.Add("-sDEVICE=mswinpr2");
-                switches.Add(Convert.ToString("-sOutputFile=%printer%") + Settings.Default.printer);
+                switches.Add(Convert.ToString("-sOutputFile=%printer%") + Settings.Default.Printer);
                 switches.Add("-f");
                 switches.Add(printFile);
                 processor.StartProcessing(switches.ToArray(), null);
             }
+        }
+        public bool IsFileLocked(FileInfo file)
+        {
+            try
+            {
+                using (FileStream stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.None))
+                {
+                    stream.Close();
+                }
+            }
+            catch (IOException)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private void SettingButton_Click(object sender, EventArgs e)
+        {
+            SettingsPanel.Enabled = true;
+            SettingsPanel.Visible = true;
+            WatchedFolderTextBox.Text = Settings.Default.HotFolder;
+            SettingsFilePath(WatchedFolderTextBox, WatchedFolderDialog);
+            TempFolderTextBox.Text = Settings.Default.TempFolder;
+            SettingsFilePath(TempFolderTextBox, TempFolderDialog);
+            PrinterListComboBox.Text = Settings.Default.Printer;
+
+            string listOfPrinters;
+            for (int i = 0; i < PrinterSettings.InstalledPrinters.Count; i++)
+            {
+                listOfPrinters = PrinterSettings.InstalledPrinters[i];
+                PrinterListComboBox.Items.Add(listOfPrinters);
+            }
+            AllowTabloidCheckBox.Checked = Settings.Default.AllowTabloid;
+
+            
+        }
+        public void SettingsFilePath(TextBox textBox, FolderBrowserDialog folderBrowserDialog)
+        {
+            if (textBox.Text == "")
+            {
+                textBox.Text = folderBrowserDialog.SelectedPath;
+            }
+        }
+
+        public void SettingsClick(TextBox textBox, FolderBrowserDialog folderBrowserDialog)
+        {
+            if (Directory.Exists(textBox.Text))
+            {
+                folderBrowserDialog.SelectedPath = textBox.Text;
+            }
+            else
+            {
+                folderBrowserDialog.SelectedPath = Settings.Default.LastFolder;
+            }
+
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+            {
+                textBox.Text = folderBrowserDialog.SelectedPath;
+                Settings.Default.LastFolder = folderBrowserDialog.SelectedPath;
+            }
+        }
+
+        private void CancelButton_Click(object sender, EventArgs e)
+        {
+            SettingsPanel.Enabled = false;
+            SettingsPanel.Visible = false;
+        }
+
+        private void SaveButton_Click(object sender, EventArgs e)
+        {
+            Settings.Default.AllowTabloid = AllowTabloidCheckBox.Checked;
+            Settings.Default.HotFolder = WatchedFolderTextBox.Text;
+            Settings.Default.TempFolder = TempFolderTextBox.Text;
+            Settings.Default.Printer = PrinterListComboBox.Text;
+            Settings.Default.Save();
+            SettingsPanel.Enabled = false;
+            SettingsPanel.Visible = false;
+        }
+
+        private void WatchedFolderButton_Click(object sender, EventArgs e)
+        {
+            SettingsClick(WatchedFolderTextBox, WatchedFolderDialog);
+        }
+
+        private void TempFolderButton_Click(object sender, EventArgs e)
+        {
+            SettingsClick(TempFolderTextBox, TempFolderDialog);
+        }
+
+        private void ClearButton_Click(object sender, EventArgs e)
+        {
+            if (Directory.Exists(Settings.Default.TempFolder))
+            {
+                Directory.Delete(Settings.Default.TempFolder, true);
+                Directory.CreateDirectory(Settings.Default.TempFolder);
+                MainRichTextBox.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
+                MainRichTextBox.AppendText(DateTime.Now + " | " + "Clearing Temp Folder...\r\n", Color.Black, FontStyle.Regular);
+                MainRichTextBox.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
+            }
+
+        }
+    }
+
+    public static class RichTextBoxExtensions
+    {
+        public static void AppendText(this RichTextBox box, string text, Color color, FontStyle style)
+        {
+            box.SelectionStart = box.TextLength;
+            box.SelectionLength = 0;
+            box.SelectionFont = new System.Drawing.Font(box.Font, style);
+            box.SelectionColor = color;
+            box.AppendText(text);
+            box.SelectionColor = box.ForeColor;
         }
     }
 }
