@@ -52,11 +52,9 @@
             this.MainBGW = new System.ComponentModel.BackgroundWorker();
             this.WatchedFolderDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.TempFolderDialog = new System.Windows.Forms.FolderBrowserDialog();
-            this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.MainTimer = new System.Windows.Forms.Timer(this.components);
             this.TrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.SettingsPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
             this.SuspendLayout();
             // 
             // StartButton
@@ -280,7 +278,6 @@
             this.Resize += new System.EventHandler(this.Form1_Resize);
             this.SettingsPanel.ResumeLayout(false);
             this.SettingsPanel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -308,7 +305,6 @@
         private Button CancelButton;
         private FolderBrowserDialog WatchedFolderDialog;
         private FolderBrowserDialog TempFolderDialog;
-        private BindingSource bindingSource1;
         private System.Windows.Forms.Timer MainTimer;
         private NotifyIcon TrayIcon;
         private CheckBox PrintFileInfoCheckBox;
