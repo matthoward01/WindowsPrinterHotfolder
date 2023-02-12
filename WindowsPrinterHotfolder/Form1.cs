@@ -13,6 +13,7 @@ using System.Drawing.Printing;
 using System.DirectoryServices.ActiveDirectory;
 using static iTextSharp.text.pdf.PdfDocument;
 using System.Runtime;
+using System.Windows.Forms;
 
 namespace WindowsPrinterHotfolder
 {
@@ -23,6 +24,7 @@ namespace WindowsPrinterHotfolder
         public Form1()
         {
             InitializeComponent();
+            TrayMenuContext();
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
             SettingCheck();
             MainTimer.Tick += new EventHandler(hotFolderParse);
@@ -108,8 +110,8 @@ namespace WindowsPrinterHotfolder
             int pageCount = inputFile.NumberOfPages;
             int fileProgressStep = (int)Math.Ceiling(((double)100) / pageCount);
             bool tabloid = false;
-            float paperWidth = 792;
-            float paperHeight = 1224;
+            float paperWidth = 612;
+            float paperHeight = 792;
             doc1.Open();
             for (int i = 1; i <= pageCount; i++)
             {
@@ -125,8 +127,8 @@ namespace WindowsPrinterHotfolder
                 if (((fileSize.Width * fileSize.Height) < 414720) || 
                     ((fileSize.Width == 612) && fileSize.Height == 792) || 
                     ((fileSize.Width == 792) && fileSize.Height == 612))
-                {
-                    //mainForm.BeginInvoke(new Action(() => { mainForm.rtMain.AppendText(DateTime.Now + "| " + tabloid +"\r\n", Color.Red, FontStyle.Regular); }));
+                {                
+                    //MainRichTextBox.AppendText(DateTime.Now + "| " + tabloid + "\r\n", Color.Red, FontStyle.Regular);
                     
                 }
                 else if (Settings.Default.AllowTabloid)
@@ -195,19 +197,22 @@ namespace WindowsPrinterHotfolder
                     placePdf.Rotate(90);
                 }
                 writer1.DirectContent.AddTemplate(pdfPage, placePdf);
-                //mainForm.BeginInvoke(new Action(() => { mainForm.pbIndividual.Step = fileProgressStep; }));
-                //mainForm.BeginInvoke(new Action(() => { mainForm.pbIndividual.PerformStep(); }));
-                cb.BeginText();
-                cb.SetFontAndSize(GillSansR, 12);
-                cb.SetTextMatrix(36, 36);
-                cb.ShowText(Path.GetFileNameWithoutExtension(passedFile) + " - Pg: " + i);
-                cb.EndText();
+
+                if (Settings.Default.PrintFileInfo)
+                {
+                    cb.BeginText();
+                    cb.SetFontAndSize(GillSansR, 12);
+                    cb.SetTextMatrix(36, 36);
+                    cb.ShowText(Path.GetFileNameWithoutExtension(passedFile) + " - Pg: " + i);
+                    cb.EndText();
+                }
             }
             doc1.Close();
 
             SendToPrinter(Path.Combine(Settings.Default.TempFolder, Path.GetFileName(passedFile)), false, tabloid);
 
         }
+
         public void SendToPrinter(string printFile, bool fit, bool tabloid)
         {            
             GhostscriptVersionInfo gvi = new GhostscriptVersionInfo(new Version(0, 0, 0), System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "References", "gsdll64.dll"), string.Empty, GhostscriptLicense.GPL);
@@ -235,6 +240,7 @@ namespace WindowsPrinterHotfolder
                 processor.StartProcessing(switches.ToArray(), null);
             }
         }
+
         public bool IsFileLocked(FileInfo file)
         {
             try
@@ -269,9 +275,11 @@ namespace WindowsPrinterHotfolder
                 PrinterListComboBox.Items.Add(listOfPrinters);
             }
             AllowTabloidCheckBox.Checked = Settings.Default.AllowTabloid;
+            PrintFileInfoCheckBox.Checked = Settings.Default.PrintFileInfo;
 
             
         }
+
         public void SettingsFilePath(TextBox textBox, FolderBrowserDialog folderBrowserDialog)
         {
             if (textBox.Text == "")
@@ -307,6 +315,7 @@ namespace WindowsPrinterHotfolder
         private void SaveButton_Click(object sender, EventArgs e)
         {
             Settings.Default.AllowTabloid = AllowTabloidCheckBox.Checked;
+            Settings.Default.PrintFileInfo = PrintFileInfoCheckBox.Checked;
             Settings.Default.HotFolder = WatchedFolderTextBox.Text;
             Settings.Default.TempFolder = TempFolderTextBox.Text;
             Settings.Default.Printer = PrinterListComboBox.Text;
@@ -436,6 +445,43 @@ namespace WindowsPrinterHotfolder
         {
             MainRichTextBox.SelectionStart = MainRichTextBox.Text.Length;
             MainRichTextBox.ScrollToCaret();
+        }
+
+        private void Form1_Resize(object sender, EventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                Hide();
+                TrayIcon.Visible = true;
+            }
+        }
+
+        private void TrayIcon_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            Show();
+            this.WindowState = FormWindowState.Normal;
+            TrayIcon.Visible = false;
+        }
+
+        private void TrayMenuContext()
+        {
+            this.TrayIcon.ContextMenuStrip = new ContextMenuStrip();
+            this.TrayIcon.ContextMenuStrip.Items.Add("Show", null, this.MenuProgramShow);
+            this.TrayIcon.ContextMenuStrip.Items.Add("Start", null, this.StartButton_Click);
+            this.TrayIcon.ContextMenuStrip.Items.Add("Stop", null, this.StopButton_Click);
+            this.TrayIcon.ContextMenuStrip.Items.Add("Exit", null, this.MenuExit_Click);
+        }
+
+        private void MenuProgramShow(object? sender, EventArgs e)
+        {
+            Show();
+            this.WindowState = FormWindowState.Normal;
+            TrayIcon.Visible = false;
+        }
+
+        void MenuExit_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
     }
 

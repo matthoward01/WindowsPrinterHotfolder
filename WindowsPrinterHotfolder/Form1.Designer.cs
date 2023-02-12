@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.StartButton = new System.Windows.Forms.Button();
             this.StopButton = new System.Windows.Forms.Button();
             this.ClearButton = new System.Windows.Forms.Button();
@@ -36,6 +37,7 @@
             this.MainProgressBar = new System.Windows.Forms.ProgressBar();
             this.SettingButton = new System.Windows.Forms.Button();
             this.SettingsPanel = new System.Windows.Forms.Panel();
+            this.PrintFileInfoCheckBox = new System.Windows.Forms.CheckBox();
             this.CancelButton = new System.Windows.Forms.Button();
             this.SaveButton = new System.Windows.Forms.Button();
             this.WatchedFolderButton = new System.Windows.Forms.Button();
@@ -52,6 +54,7 @@
             this.TempFolderDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.MainTimer = new System.Windows.Forms.Timer(this.components);
+            this.TrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.SettingsPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
             this.SuspendLayout();
@@ -116,6 +119,7 @@
             // 
             // SettingsPanel
             // 
+            this.SettingsPanel.Controls.Add(this.PrintFileInfoCheckBox);
             this.SettingsPanel.Controls.Add(this.CancelButton);
             this.SettingsPanel.Controls.Add(this.SaveButton);
             this.SettingsPanel.Controls.Add(this.WatchedFolderButton);
@@ -133,6 +137,16 @@
             this.SettingsPanel.Size = new System.Drawing.Size(610, 255);
             this.SettingsPanel.TabIndex = 7;
             this.SettingsPanel.Visible = false;
+            // 
+            // PrintFileInfoCheckBox
+            // 
+            this.PrintFileInfoCheckBox.AutoSize = true;
+            this.PrintFileInfoCheckBox.Location = new System.Drawing.Point(212, 100);
+            this.PrintFileInfoCheckBox.Name = "PrintFileInfoCheckBox";
+            this.PrintFileInfoCheckBox.Size = new System.Drawing.Size(96, 19);
+            this.PrintFileInfoCheckBox.TabIndex = 10;
+            this.PrintFileInfoCheckBox.Text = "Print File Info";
+            this.PrintFileInfoCheckBox.UseVisualStyleBackColor = true;
             // 
             // CancelButton
             // 
@@ -241,6 +255,12 @@
             this.MainBGW.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.MainBGW_ProgressChanged);
             this.MainBGW.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.MainBGW_RunWorkerCompleted);
             // 
+            // TrayIcon
+            // 
+            this.TrayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("TrayIcon.Icon")));
+            this.TrayIcon.Text = "Windows Printer Hotfolder";
+            this.TrayIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.TrayIcon_MouseDoubleClick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -253,9 +273,11 @@
             this.Controls.Add(this.ClearButton);
             this.Controls.Add(this.StopButton);
             this.Controls.Add(this.StartButton);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Form1";
-            this.Text = "WindowsPrinterHotfolder";
+            this.Text = "Windows Printer Hotfolder";
+            this.Resize += new System.EventHandler(this.Form1_Resize);
             this.SettingsPanel.ResumeLayout(false);
             this.SettingsPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
@@ -288,5 +310,7 @@
         private FolderBrowserDialog TempFolderDialog;
         private BindingSource bindingSource1;
         private System.Windows.Forms.Timer MainTimer;
+        private NotifyIcon TrayIcon;
+        private CheckBox PrintFileInfoCheckBox;
     }
 }

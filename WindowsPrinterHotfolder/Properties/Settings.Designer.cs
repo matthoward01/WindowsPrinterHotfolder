@@ -82,5 +82,17 @@ namespace WindowsPrinterHotfolder.Properties {
                 this["LastFolder"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool PrintFileInfo {
+            get {
+                return ((bool)(this["PrintFileInfo"]));
+            }
+            set {
+                this["PrintFileInfo"] = value;
+            }
+        }
     }
 }
