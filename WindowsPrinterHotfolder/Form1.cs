@@ -163,7 +163,7 @@ namespace WindowsPrinterHotfolder
                     {
                         scalePercent = heightScale;
                     }
-                    scalePercent = scalePercent - .05f;
+                    scalePercent = scalePercent - .005f;
                     xPosition = ((paperWidth - (fileSize.Width * scalePercent)) / 2) / scalePercent;
                     yPosition = ((paperHeight - (fileSize.Height * scalePercent)) / 2) / scalePercent;
                 }
@@ -202,7 +202,7 @@ namespace WindowsPrinterHotfolder
                 {
                     cb.BeginText();
                     cb.SetFontAndSize(GillSansR, 12);
-                    cb.SetTextMatrix(36, 36);
+                    cb.SetTextMatrix(24, 24);
                     cb.ShowText(Path.GetFileNameWithoutExtension(passedFile) + " - Pg: " + i);
                     cb.EndText();
                 }
