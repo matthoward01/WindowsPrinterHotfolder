@@ -27,7 +27,8 @@ namespace WindowsPrinterHotfolder
             TrayMenuContext();
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
             SettingCheck();
-            MainTimer.Tick += new EventHandler(hotFolderParse);
+            //MainTimer.Tick += new EventHandler(hotFolderParse);
+            //MainTimer2.Tick += new EventHandler(hotFolderParse2);
         }
 
         private void SettingCheck()
@@ -56,11 +57,34 @@ namespace WindowsPrinterHotfolder
                 MainRichTextBox.AppendText(DateTime.Now + " | " + "Set Printer...\r\n", Color.Black, FontStyle.Regular);
                 MainRichTextBox.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
             }
+            if (!Directory.Exists(Settings.Default.TempFolder2))
+            {
+                StartButton.Enabled = false;
+                MainRichTextBox2.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
+                MainRichTextBox2.AppendText(DateTime.Now + " | " + "Set Temp Folder 2...\r\n", Color.Black, FontStyle.Regular);
+                MainRichTextBox2.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
+
+            }
+            if (!Directory.Exists(Settings.Default.HotFolder2))
+            {
+                StartButton.Enabled = false;
+                MainRichTextBox2.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
+                MainRichTextBox2.AppendText(DateTime.Now + " | " + "Set HotFolder 2...\r\n", Color.Black, FontStyle.Regular);
+                MainRichTextBox2.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
+
+            }
+            if (Settings.Default.Printer2.Equals(""))
+            {
+                StartButton.Enabled = false;
+                MainRichTextBox2.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
+                MainRichTextBox2.AppendText(DateTime.Now + " | " + "Set Printer 2...\r\n", Color.Black, FontStyle.Regular);
+                MainRichTextBox2.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
+            }
         }
 
         private void hotFolderParse(Object source, EventArgs e)
         {
-            MainTimer.Stop();
+            //MainTimer.Stop();
             hotfolderFiles = new();
             try
             {
@@ -77,7 +101,7 @@ namespace WindowsPrinterHotfolder
                     MainRichTextBox.AppendText(DateTime.Now + " | Added file: " + hotfolderFiles[i] + "\r\n", Color.Black, FontStyle.Regular);
                 }
 
-                MainTimer.Stop();
+                //MainTimer.Stop();
 
                 if (hotfolderFiles.Count != 0 && !MainBGW.IsBusy)
                 {
@@ -86,13 +110,51 @@ namespace WindowsPrinterHotfolder
                     hotfolderFiles.Clear();
                 }
 
-                MainTimer.Start();
+                //MainTimer.Start();
             }
             catch (Exception ex)
             {
                 MainRichTextBox.AppendText(DateTime.Now + " | " + ex.Message + "\r\n", Color.Red, FontStyle.Regular);
                 hotfolderFiles.Clear();
-                MainTimer.Start();
+                //MainTimer.Start();
+            }
+        }
+
+        private void hotFolderParse2(Object source, EventArgs e)
+        {
+            //MainTimer2.Stop();
+            hotfolderFiles = new();
+            try
+            {
+                DirectoryInfo dinfo = new DirectoryInfo(Settings.Default.HotFolder2);
+                FileInfo[] Files = dinfo.GetFiles("*.pdf").ToArray();
+
+                foreach (FileInfo file in Files)
+                {
+                    hotfolderFiles.Add(file.Name);
+                }
+
+                for (int i = 0; i < hotfolderFiles.Count; i++)
+                {
+                    MainRichTextBox2.AppendText(DateTime.Now + " | Added file: " + hotfolderFiles[i] + "\r\n", Color.Black, FontStyle.Regular);
+                }
+
+                //MainTimer2.Stop();
+
+                if (hotfolderFiles.Count != 0 && !MainBGW2.IsBusy)
+                {
+                    object[] hotfolderArgs = { hotfolderFiles.ToArray(), hotfolderFiles.Count() };
+                    MainBGW2.RunWorkerAsync(hotfolderArgs);
+                    hotfolderFiles.Clear();
+                }
+
+                //MainTimer2.Start();
+            }
+            catch (Exception ex)
+            {
+                MainRichTextBox2.AppendText(DateTime.Now + " | " + ex.Message + "\r\n", Color.Red, FontStyle.Regular);
+                hotfolderFiles.Clear();
+                //MainTimer2.Start();
             }
         }
 
@@ -210,7 +272,122 @@ namespace WindowsPrinterHotfolder
             doc1.Close();
 
             SendToPrinter(Path.Combine(Settings.Default.TempFolder, Path.GetFileName(passedFile)), false, tabloid);
+        }
 
+        public void MakePrintPdf2(string passedFile)
+        {
+            Form mainForm = new Form1();
+            //passedFile = Settings.Default.hotFolder + "\\" + passedFile;         
+            string gillRFont = "Fonts\\GIL_____.TTF";
+            BaseFont GillSansR = BaseFont.CreateFont(gillRFont, BaseFont.CP1252, BaseFont.EMBEDDED);
+            FileStream fs1 = new FileStream(Path.Combine(Settings.Default.TempFolder2, Path.GetFileName(passedFile)), FileMode.Create, FileAccess.Write, FileShare.None);
+            Document doc1 = new Document();
+            PdfReader inputFile = new PdfReader(passedFile);
+            PdfWriter writer1 = PdfWriter.GetInstance(doc1, fs1);
+            writer1.PdfVersion = PdfWriter.VERSION_1_3;
+            int pageCount = inputFile.NumberOfPages;
+            int fileProgressStep = (int)Math.Ceiling(((double)100) / pageCount);
+            bool tabloid = false;
+            float paperWidth = 612;
+            float paperHeight = 792;
+            doc1.Open();
+            for (int i = 1; i <= pageCount; i++)
+            {
+                PdfImportedPage page = writer1.GetImportedPage(inputFile, i);
+                iTextSharp.text.Rectangle fileSize = inputFile.GetBoxSize(i, "media");
+                doc1.SetMargins(0, 0, 0, 0);
+                bool rotate = false;
+                float scalePercent = 1;
+                paperWidth = 612;
+                paperHeight = 792;
+                doc1.SetPageSize(new iTextSharp.text.Rectangle(paperWidth, paperHeight));
+
+                if (((fileSize.Width * fileSize.Height) < 414720) ||
+                    ((fileSize.Width == 612) && fileSize.Height == 792) ||
+                    ((fileSize.Width == 792) && fileSize.Height == 612))
+                {
+                    //MainRichTextBox.AppendText(DateTime.Now + "| " + tabloid + "\r\n", Color.Red, FontStyle.Regular);
+
+                }
+                else if (Settings.Default.AllowTabloid2)
+                {
+                    tabloid = true;
+                    paperWidth = 792;
+                    paperHeight = 1224;
+                    doc1.SetPageSize(new iTextSharp.text.Rectangle(paperWidth, paperHeight));
+                }
+
+                float widthScale = fileSize.Width;
+                float heightScale = fileSize.Height;
+                float xPosition = (paperWidth - fileSize.Width) / 2;
+                float yPosition = (paperHeight - fileSize.Height) / 2;
+
+                if (fileSize.Width > fileSize.Height)
+                {
+                    rotate = true;
+                    xPosition = (((paperWidth - fileSize.Height) / 2) + fileSize.Height);
+                    yPosition = (paperHeight - fileSize.Width) / 2;
+                }
+                if ((fileSize.Width > paperWidth || fileSize.Height > paperHeight) && !rotate)
+                {
+                    widthScale = paperWidth / fileSize.Width;
+                    heightScale = paperHeight / fileSize.Height;
+
+                    if (widthScale < heightScale)
+                    {
+                        scalePercent = widthScale;
+                    }
+                    else
+                    {
+                        scalePercent = heightScale;
+                    }
+                    scalePercent = scalePercent - .005f;
+                    xPosition = ((paperWidth - (fileSize.Width * scalePercent)) / 2) / scalePercent;
+                    yPosition = ((paperHeight - (fileSize.Height * scalePercent)) / 2) / scalePercent;
+                }
+                if ((fileSize.Width > paperHeight || fileSize.Height > paperWidth) && rotate)
+                {
+                    widthScale = paperHeight / fileSize.Width;
+                    heightScale = paperWidth / fileSize.Height;
+                    if (widthScale < heightScale)
+                    {
+                        scalePercent = widthScale;
+                    }
+                    else
+                    {
+                        scalePercent = heightScale;
+                    }
+                    scalePercent = scalePercent - .05f;
+                    xPosition = (((paperWidth - (fileSize.Height * scalePercent)) / 2) + (fileSize.Height * scalePercent)) / scalePercent;
+                    yPosition = ((paperHeight - (fileSize.Width * scalePercent)) / 2) / scalePercent;
+                    //xPosition = (paperHeight - (fileSizeTrim.Height * scalePercent));
+                    //yPosition = (paperWidth - (fileSizeTrim.Width * scalePercent));
+                }
+                doc1.NewPage();
+                PdfReader pdfFile = new PdfReader(passedFile);
+                PdfImportedPage pdfPage = writer1.GetImportedPage(pdfFile, i);
+                PdfContentByte cb = writer1.DirectContent;
+                var placePdf = new System.Drawing.Drawing2D.Matrix();
+                placePdf.Scale(scalePercent, scalePercent);
+                placePdf.Translate(xPosition, yPosition);
+                if (rotate)
+                {
+                    placePdf.Rotate(90);
+                }
+                writer1.DirectContent.AddTemplate(pdfPage, placePdf);
+
+                if (Settings.Default.PrintFileInfo2)
+                {
+                    cb.BeginText();
+                    cb.SetFontAndSize(GillSansR, 12);
+                    cb.SetTextMatrix(24, 24);
+                    cb.ShowText(Path.GetFileNameWithoutExtension(passedFile) + " - Pg: " + i);
+                    cb.EndText();
+                }
+            }
+            doc1.Close();
+
+            SendToPrinter(Path.Combine(Settings.Default.TempFolder2, Path.GetFileName(passedFile)), false, tabloid);
         }
 
         public void SendToPrinter(string printFile, bool fit, bool tabloid)
@@ -277,7 +454,22 @@ namespace WindowsPrinterHotfolder
             AllowTabloidCheckBox.Checked = Settings.Default.AllowTabloid;
             PrintFileInfoCheckBox.Checked = Settings.Default.PrintFileInfo;
 
-            
+            WatchedFolderTextBox2.Text = Settings.Default.HotFolder2;
+            SettingsFilePath(WatchedFolderTextBox2, WatchedFolderDialog2);
+            TempFolderTextBox2.Text = Settings.Default.TempFolder2;
+            SettingsFilePath(TempFolderTextBox2, TempFolderDialog2);
+            PrinterListComboBox2.Text = Settings.Default.Printer2;
+
+            string listOfPrinters2;
+            for (int i = 0; i < PrinterSettings.InstalledPrinters.Count; i++)
+            {
+                listOfPrinters2 = PrinterSettings.InstalledPrinters[i];
+                PrinterListComboBox2.Items.Add(listOfPrinters2);
+            }
+            AllowTabloidCheckBox2.Checked = Settings.Default.AllowTabloid2;
+            PrintFileInfoCheckBox2.Checked = Settings.Default.PrintFileInfo2;
+
+
         }
 
         public void SettingsFilePath(TextBox textBox, FolderBrowserDialog folderBrowserDialog)
@@ -319,6 +511,11 @@ namespace WindowsPrinterHotfolder
             Settings.Default.HotFolder = WatchedFolderTextBox.Text;
             Settings.Default.TempFolder = TempFolderTextBox.Text;
             Settings.Default.Printer = PrinterListComboBox.Text;
+            Settings.Default.AllowTabloid2 = AllowTabloidCheckBox2.Checked;
+            Settings.Default.PrintFileInfo2 = PrintFileInfoCheckBox2.Checked;
+            Settings.Default.HotFolder2 = WatchedFolderTextBox2.Text;
+            Settings.Default.TempFolder2 = TempFolderTextBox2.Text;
+            Settings.Default.Printer2 = PrinterListComboBox2.Text;
             Settings.Default.Save();
             SettingsPanel.Enabled = false;
             SettingsPanel.Visible = false;
@@ -326,6 +523,9 @@ namespace WindowsPrinterHotfolder
             MainRichTextBox.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
             MainRichTextBox.AppendText(DateTime.Now + " | " + "Settings Saved...\r\n", Color.Black, FontStyle.Regular);
             MainRichTextBox.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
+            MainRichTextBox2.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
+            MainRichTextBox2.AppendText(DateTime.Now + " | " + "Settings Saved...\r\n", Color.Black, FontStyle.Regular);
+            MainRichTextBox2.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
         }
 
         private void WatchedFolderButton_Click(object sender, EventArgs e)
@@ -338,6 +538,16 @@ namespace WindowsPrinterHotfolder
             SettingsClick(TempFolderTextBox, TempFolderDialog);
         }
 
+        private void WatchedFolderButton2_Click(object sender, EventArgs e)
+        {
+            SettingsClick(WatchedFolderTextBox2, WatchedFolderDialog2);
+        }
+
+        private void TempFolderButton2_Click(object sender, EventArgs e)
+        {
+            SettingsClick(TempFolderTextBox2, TempFolderDialog2);
+        }
+
         private void ClearButton_Click(object sender, EventArgs e)
         {
             if (Directory.Exists(Settings.Default.TempFolder))
@@ -347,6 +557,14 @@ namespace WindowsPrinterHotfolder
                 MainRichTextBox.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
                 MainRichTextBox.AppendText(DateTime.Now + " | " + "Clearing Temp Folder...\r\n", Color.Black, FontStyle.Regular);
                 MainRichTextBox.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
+            }
+            if (Directory.Exists(Settings.Default.TempFolder2))
+            {
+                Directory.Delete(Settings.Default.TempFolder2, true);
+                Directory.CreateDirectory(Settings.Default.TempFolder2);
+                MainRichTextBox2.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
+                MainRichTextBox2.AppendText(DateTime.Now + " | " + "Clearing Temp Folder 2...\r\n", Color.Black, FontStyle.Regular);
+                MainRichTextBox2.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
             }
 
         }
@@ -364,6 +582,11 @@ namespace WindowsPrinterHotfolder
             MainRichTextBox.AppendText(DateTime.Now + " | HotFolder Parsing Started...\r\n", Color.Black, FontStyle.Regular);
             MainRichTextBox.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
             MainTimer.Start();
+
+            MainRichTextBox2.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
+            MainRichTextBox2.AppendText(DateTime.Now + " | HotFolder Parsing Started...\r\n", Color.Black, FontStyle.Regular);
+            MainRichTextBox2.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
+            MainTimer2.Start();
         }
 
         private void StopButton_Click(object sender, EventArgs e)
@@ -375,17 +598,23 @@ namespace WindowsPrinterHotfolder
             StartButton.Visible = true;
             StartButton.Enabled = true;
             SettingButton.Enabled = true;
-            MainBGW.CancelAsync();
+            MainBGW.CancelAsync();            
             MainRichTextBox.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
             MainRichTextBox.AppendText(DateTime.Now + " | HotFolder Parsing Stopped...\r\n", Color.Black, FontStyle.Regular);
             MainRichTextBox.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
             MainTimer.Stop();
+
+            MainRichTextBox2.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
+            MainRichTextBox2.AppendText(DateTime.Now + " | HotFolder Parsing Stopped...\r\n", Color.Black, FontStyle.Regular);
+            MainRichTextBox2.AppendText("-------------------------------------------------------------\r\n", Color.Black, FontStyle.Regular);
+            MainBGW2.CancelAsync();
+            MainTimer2.Stop();
         }
 
         private void MainBGW_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             Invoke(new Action(() => { MainProgressBar.Value = 0; }));
-            MainTimer.Stop();
+            //MainTimer.Stop();
             object[] arg = e.Argument as object[];
             string[] passedArray = (string[])arg[0];
             List<string> passedList = passedArray.ToList();
@@ -399,7 +628,8 @@ namespace WindowsPrinterHotfolder
 
                     if (File.Exists(Path.Combine(Settings.Default.HotFolder, runfile)))
                     {
-                        File.Delete(Path.Combine(Settings.Default.HotFolder, runfile));
+                        Directory.CreateDirectory(Path.Combine(Settings.Default.HotFolder, "Processed"));
+                        File.Move(Path.Combine(Settings.Default.HotFolder, runfile), Path.Combine(Settings.Default.HotFolder, "Processed", runfile), true);
                     }
 
                     MainBGW.ReportProgress(fileProgressStep);
@@ -418,10 +648,53 @@ namespace WindowsPrinterHotfolder
 
         }
 
+        private void MainBGW2_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+            Invoke(new Action(() => { MainProgressBar2.Value = 0; }));
+            //MainTimer2.Stop();
+            object[] arg = e.Argument as object[];
+            string[] passedArray = (string[])arg[0];
+            List<string> passedList = passedArray.ToList();
+            int fileProgressStep = (int)Math.Ceiling(((double)100) / (int)arg[1]);
+
+            foreach (string runfile in passedList)
+            {
+                try
+                {
+                    MakePrintPdf2(Path.Combine(Settings.Default.HotFolder2, runfile));
+
+                    if (File.Exists(Path.Combine(Settings.Default.HotFolder2, runfile)))
+                    {
+                        Directory.CreateDirectory(Path.Combine(Settings.Default.HotFolder2, "Processed"));
+                        File.Move(Path.Combine(Settings.Default.HotFolder2, runfile), Path.Combine(Settings.Default.HotFolder2, "Processed", runfile), true);
+                    }
+
+                    MainBGW2.ReportProgress(fileProgressStep);
+                }
+                catch (Exception workerError)
+                {
+                    Invoke(new Action(() => { MainRichTextBox2.AppendText(DateTime.Now + " | " + workerError.Message + ". \r\n", Color.Red, FontStyle.Regular); }));
+                    MainBGW2.ReportProgress(fileProgressStep);
+                }
+
+                if (passedList.Count > 0)
+                {
+                    e.Result = "Done";
+                }
+            }
+
+        }
+
         private void MainBGW_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
         {
             MainProgressBar.Step = e.ProgressPercentage;
             MainProgressBar.PerformStep();
+        }
+
+        private void MainBGW2_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
+        {
+            MainProgressBar2.Step = e.ProgressPercentage;
+            MainProgressBar2.PerformStep();
         }
 
         private void MainBGW_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
@@ -429,7 +702,7 @@ namespace WindowsPrinterHotfolder
             if (e.Error != null)
             {
                 Invoke(new Action(() => { MainRichTextBox.AppendText(DateTime.Now + " | " + (string)e.Error.Message + "Error. \r\n\r\n", Color.Red, FontStyle.Regular); }));
-                MainTimer.Start();
+                //MainTimer.Start();
             }
             else
             {
@@ -437,7 +710,24 @@ namespace WindowsPrinterHotfolder
                 {
                     Invoke(new Action(() => { MainRichTextBox.AppendText(DateTime.Now + " | " + "Files Processed. \r\n\r\n", Color.Black, FontStyle.Regular); }));
                 }
-                MainTimer.Start();
+                //MainTimer.Start();
+            }
+        }
+
+        private void MainBGW2_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        {
+            if (e.Error != null)
+            {
+                Invoke(new Action(() => { MainRichTextBox2.AppendText(DateTime.Now + " | " + (string)e.Error.Message + "Error. \r\n\r\n", Color.Red, FontStyle.Regular); }));
+                //MainTimer2.Start();
+            }
+            else
+            {
+                if ((string)e.Result == "Done")
+                {
+                    Invoke(new Action(() => { MainRichTextBox2.AppendText(DateTime.Now + " | " + "Files Processed. \r\n\r\n", Color.Black, FontStyle.Regular); }));
+                }
+                //MainTimer2.Start();
             }
         }
 
@@ -445,6 +735,12 @@ namespace WindowsPrinterHotfolder
         {
             MainRichTextBox.SelectionStart = MainRichTextBox.Text.Length;
             MainRichTextBox.ScrollToCaret();
+        }
+
+        private void MainRichTextBox2_TextChanged(object sender, EventArgs e)
+        {
+            MainRichTextBox2.SelectionStart = MainRichTextBox2.Text.Length;
+            MainRichTextBox2.ScrollToCaret();
         }
 
         private void Form1_Resize(object sender, EventArgs e)

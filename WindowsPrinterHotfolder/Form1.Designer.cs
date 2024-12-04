@@ -28,258 +28,407 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.StartButton = new System.Windows.Forms.Button();
-            this.StopButton = new System.Windows.Forms.Button();
-            this.ClearButton = new System.Windows.Forms.Button();
-            this.MainRichTextBox = new System.Windows.Forms.RichTextBox();
-            this.MainProgressBar = new System.Windows.Forms.ProgressBar();
-            this.SettingButton = new System.Windows.Forms.Button();
-            this.SettingsPanel = new System.Windows.Forms.Panel();
-            this.PrintFileInfoCheckBox = new System.Windows.Forms.CheckBox();
-            this.CancelButton = new System.Windows.Forms.Button();
-            this.SaveButton = new System.Windows.Forms.Button();
-            this.WatchedFolderButton = new System.Windows.Forms.Button();
-            this.label3 = new System.Windows.Forms.Label();
-            this.WatchedFolderTextBox = new System.Windows.Forms.TextBox();
-            this.TempFolderButton = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
-            this.AllowTabloidCheckBox = new System.Windows.Forms.CheckBox();
-            this.PrinterListComboBox = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.TempFolderTextBox = new System.Windows.Forms.TextBox();
-            this.MainBGW = new System.ComponentModel.BackgroundWorker();
-            this.WatchedFolderDialog = new System.Windows.Forms.FolderBrowserDialog();
-            this.TempFolderDialog = new System.Windows.Forms.FolderBrowserDialog();
-            this.MainTimer = new System.Windows.Forms.Timer(this.components);
-            this.TrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
-            this.SettingsPanel.SuspendLayout();
-            this.SuspendLayout();
+            StartButton = new Button();
+            StopButton = new Button();
+            ClearButton = new Button();
+            MainProgressBar = new ProgressBar();
+            SettingButton = new Button();
+            SettingsPanel = new Panel();
+            PrintFileInfoCheckBox2 = new CheckBox();
+            WatchedFolderButton2 = new Button();
+            label4 = new Label();
+            WatchedFolderTextBox2 = new TextBox();
+            TempFolderButton2 = new Button();
+            label5 = new Label();
+            AllowTabloidCheckBox2 = new CheckBox();
+            PrinterListComboBox2 = new ComboBox();
+            label6 = new Label();
+            TempFolderTextBox2 = new TextBox();
+            PrintFileInfoCheckBox = new CheckBox();
+            CancelButton = new Button();
+            SaveButton = new Button();
+            WatchedFolderButton = new Button();
+            label3 = new Label();
+            WatchedFolderTextBox = new TextBox();
+            TempFolderButton = new Button();
+            label2 = new Label();
+            AllowTabloidCheckBox = new CheckBox();
+            PrinterListComboBox = new ComboBox();
+            label1 = new Label();
+            TempFolderTextBox = new TextBox();
+            MainBGW = new System.ComponentModel.BackgroundWorker();
+            WatchedFolderDialog = new FolderBrowserDialog();
+            TempFolderDialog = new FolderBrowserDialog();
+            MainTimer = new System.Windows.Forms.Timer(components);
+            TrayIcon = new NotifyIcon(components);
+            MainTimer2 = new System.Windows.Forms.Timer(components);
+            TempFolderDialog2 = new FolderBrowserDialog();
+            WatchedFolderDialog2 = new FolderBrowserDialog();
+            MainBGW2 = new System.ComponentModel.BackgroundWorker();
+            MainProgressBar2 = new ProgressBar();
+            MainRichTextBox = new RichTextBox();
+            MainRichTextBox2 = new RichTextBox();
+            SettingsPanel.SuspendLayout();
+            SuspendLayout();
             // 
             // StartButton
             // 
-            this.StartButton.Location = new System.Drawing.Point(93, 9);
-            this.StartButton.Name = "StartButton";
-            this.StartButton.Size = new System.Drawing.Size(220, 23);
-            this.StartButton.TabIndex = 0;
-            this.StartButton.Text = "Start";
-            this.StartButton.UseVisualStyleBackColor = true;
-            this.StartButton.Click += new System.EventHandler(this.StartButton_Click);
+            StartButton.Location = new Point(93, 9);
+            StartButton.Name = "StartButton";
+            StartButton.Size = new Size(220, 23);
+            StartButton.TabIndex = 0;
+            StartButton.Text = "Start";
+            StartButton.UseVisualStyleBackColor = true;
+            StartButton.Click += StartButton_Click;
             // 
             // StopButton
             // 
-            this.StopButton.Enabled = false;
-            this.StopButton.Location = new System.Drawing.Point(321, 9);
-            this.StopButton.Name = "StopButton";
-            this.StopButton.Size = new System.Drawing.Size(220, 23);
-            this.StopButton.TabIndex = 1;
-            this.StopButton.Text = "Stop";
-            this.StopButton.UseVisualStyleBackColor = true;
-            this.StopButton.Visible = false;
-            this.StopButton.Click += new System.EventHandler(this.StopButton_Click);
+            StopButton.Enabled = false;
+            StopButton.Location = new Point(321, 9);
+            StopButton.Name = "StopButton";
+            StopButton.Size = new Size(220, 23);
+            StopButton.TabIndex = 1;
+            StopButton.Text = "Stop";
+            StopButton.UseVisualStyleBackColor = true;
+            StopButton.Visible = false;
+            StopButton.Click += StopButton_Click;
             // 
             // ClearButton
             // 
-            this.ClearButton.Location = new System.Drawing.Point(547, 9);
-            this.ClearButton.Name = "ClearButton";
-            this.ClearButton.Size = new System.Drawing.Size(75, 23);
-            this.ClearButton.TabIndex = 2;
-            this.ClearButton.Text = "Clear Temp";
-            this.ClearButton.UseVisualStyleBackColor = true;
-            this.ClearButton.Click += new System.EventHandler(this.ClearButton_Click);
-            // 
-            // MainRichTextBox
-            // 
-            this.MainRichTextBox.Location = new System.Drawing.Point(12, 41);
-            this.MainRichTextBox.Name = "MainRichTextBox";
-            this.MainRichTextBox.Size = new System.Drawing.Size(610, 255);
-            this.MainRichTextBox.TabIndex = 3;
-            this.MainRichTextBox.Text = "";
-            this.MainRichTextBox.TextChanged += new System.EventHandler(this.MainRichTextBox_TextChanged);
+            ClearButton.Location = new Point(547, 9);
+            ClearButton.Name = "ClearButton";
+            ClearButton.Size = new Size(75, 23);
+            ClearButton.TabIndex = 2;
+            ClearButton.Text = "Clear Temp";
+            ClearButton.UseVisualStyleBackColor = true;
+            ClearButton.Click += ClearButton_Click;
             // 
             // MainProgressBar
             // 
-            this.MainProgressBar.Location = new System.Drawing.Point(12, 302);
-            this.MainProgressBar.Name = "MainProgressBar";
-            this.MainProgressBar.Size = new System.Drawing.Size(610, 23);
-            this.MainProgressBar.TabIndex = 4;
+            MainProgressBar.Location = new Point(12, 302);
+            MainProgressBar.Name = "MainProgressBar";
+            MainProgressBar.Size = new Size(610, 12);
+            MainProgressBar.TabIndex = 4;
             // 
             // SettingButton
             // 
-            this.SettingButton.Location = new System.Drawing.Point(12, 9);
-            this.SettingButton.Name = "SettingButton";
-            this.SettingButton.Size = new System.Drawing.Size(75, 23);
-            this.SettingButton.TabIndex = 6;
-            this.SettingButton.Text = "Settings";
-            this.SettingButton.UseVisualStyleBackColor = true;
-            this.SettingButton.Click += new System.EventHandler(this.SettingButton_Click);
+            SettingButton.Location = new Point(12, 9);
+            SettingButton.Name = "SettingButton";
+            SettingButton.Size = new Size(75, 23);
+            SettingButton.TabIndex = 6;
+            SettingButton.Text = "Settings";
+            SettingButton.UseVisualStyleBackColor = true;
+            SettingButton.Click += SettingButton_Click;
             // 
             // SettingsPanel
             // 
-            this.SettingsPanel.Controls.Add(this.PrintFileInfoCheckBox);
-            this.SettingsPanel.Controls.Add(this.CancelButton);
-            this.SettingsPanel.Controls.Add(this.SaveButton);
-            this.SettingsPanel.Controls.Add(this.WatchedFolderButton);
-            this.SettingsPanel.Controls.Add(this.label3);
-            this.SettingsPanel.Controls.Add(this.WatchedFolderTextBox);
-            this.SettingsPanel.Controls.Add(this.TempFolderButton);
-            this.SettingsPanel.Controls.Add(this.label2);
-            this.SettingsPanel.Controls.Add(this.AllowTabloidCheckBox);
-            this.SettingsPanel.Controls.Add(this.PrinterListComboBox);
-            this.SettingsPanel.Controls.Add(this.label1);
-            this.SettingsPanel.Controls.Add(this.TempFolderTextBox);
-            this.SettingsPanel.Enabled = false;
-            this.SettingsPanel.Location = new System.Drawing.Point(12, 41);
-            this.SettingsPanel.Name = "SettingsPanel";
-            this.SettingsPanel.Size = new System.Drawing.Size(610, 255);
-            this.SettingsPanel.TabIndex = 7;
-            this.SettingsPanel.Visible = false;
+            SettingsPanel.Controls.Add(PrintFileInfoCheckBox2);
+            SettingsPanel.Controls.Add(WatchedFolderButton2);
+            SettingsPanel.Controls.Add(label4);
+            SettingsPanel.Controls.Add(WatchedFolderTextBox2);
+            SettingsPanel.Controls.Add(TempFolderButton2);
+            SettingsPanel.Controls.Add(label5);
+            SettingsPanel.Controls.Add(AllowTabloidCheckBox2);
+            SettingsPanel.Controls.Add(PrinterListComboBox2);
+            SettingsPanel.Controls.Add(label6);
+            SettingsPanel.Controls.Add(TempFolderTextBox2);
+            SettingsPanel.Controls.Add(PrintFileInfoCheckBox);
+            SettingsPanel.Controls.Add(CancelButton);
+            SettingsPanel.Controls.Add(SaveButton);
+            SettingsPanel.Controls.Add(WatchedFolderButton);
+            SettingsPanel.Controls.Add(label3);
+            SettingsPanel.Controls.Add(WatchedFolderTextBox);
+            SettingsPanel.Controls.Add(TempFolderButton);
+            SettingsPanel.Controls.Add(label2);
+            SettingsPanel.Controls.Add(AllowTabloidCheckBox);
+            SettingsPanel.Controls.Add(PrinterListComboBox);
+            SettingsPanel.Controls.Add(label1);
+            SettingsPanel.Controls.Add(TempFolderTextBox);
+            SettingsPanel.Enabled = false;
+            SettingsPanel.Location = new Point(12, 42);
+            SettingsPanel.Name = "SettingsPanel";
+            SettingsPanel.Size = new Size(610, 255);
+            SettingsPanel.TabIndex = 7;
+            SettingsPanel.Visible = false;
+            // 
+            // PrintFileInfoCheckBox2
+            // 
+            PrintFileInfoCheckBox2.AutoSize = true;
+            PrintFileInfoCheckBox2.Location = new Point(212, 214);
+            PrintFileInfoCheckBox2.Name = "PrintFileInfoCheckBox2";
+            PrintFileInfoCheckBox2.Size = new Size(96, 19);
+            PrintFileInfoCheckBox2.TabIndex = 20;
+            PrintFileInfoCheckBox2.Text = "Print File Info";
+            PrintFileInfoCheckBox2.UseVisualStyleBackColor = true;
+            // 
+            // WatchedFolderButton2
+            // 
+            WatchedFolderButton2.Location = new Point(569, 125);
+            WatchedFolderButton2.Name = "WatchedFolderButton2";
+            WatchedFolderButton2.Size = new Size(25, 23);
+            WatchedFolderButton2.TabIndex = 19;
+            WatchedFolderButton2.Text = "...";
+            WatchedFolderButton2.UseVisualStyleBackColor = true;
+            WatchedFolderButton2.Click += WatchedFolderButton2_Click;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(3, 133);
+            label4.Name = "label4";
+            label4.Size = new Size(99, 15);
+            label4.TabIndex = 18;
+            label4.Text = "Watched Folder 2";
+            // 
+            // WatchedFolderTextBox2
+            // 
+            WatchedFolderTextBox2.Location = new Point(109, 125);
+            WatchedFolderTextBox2.Name = "WatchedFolderTextBox2";
+            WatchedFolderTextBox2.Size = new Size(454, 23);
+            WatchedFolderTextBox2.TabIndex = 17;
+            // 
+            // TempFolderButton2
+            // 
+            TempFolderButton2.Location = new Point(569, 156);
+            TempFolderButton2.Name = "TempFolderButton2";
+            TempFolderButton2.Size = new Size(25, 23);
+            TempFolderButton2.TabIndex = 16;
+            TempFolderButton2.Text = "...";
+            TempFolderButton2.UseVisualStyleBackColor = true;
+            TempFolderButton2.Click += TempFolderButton2_Click;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(51, 193);
+            label5.Name = "label5";
+            label5.Size = new Size(51, 15);
+            label5.TabIndex = 15;
+            label5.Text = "Printer 2";
+            // 
+            // AllowTabloidCheckBox2
+            // 
+            AllowTabloidCheckBox2.AutoSize = true;
+            AllowTabloidCheckBox2.Location = new Point(109, 214);
+            AllowTabloidCheckBox2.Name = "AllowTabloidCheckBox2";
+            AllowTabloidCheckBox2.Size = new Size(97, 19);
+            AllowTabloidCheckBox2.TabIndex = 14;
+            AllowTabloidCheckBox2.Text = "Allow Tabloid";
+            AllowTabloidCheckBox2.UseVisualStyleBackColor = true;
+            // 
+            // PrinterListComboBox2
+            // 
+            PrinterListComboBox2.FormattingEnabled = true;
+            PrinterListComboBox2.Location = new Point(109, 185);
+            PrinterListComboBox2.Name = "PrinterListComboBox2";
+            PrinterListComboBox2.Size = new Size(454, 23);
+            PrinterListComboBox2.TabIndex = 13;
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new Point(21, 164);
+            label6.Name = "label6";
+            label6.Size = new Size(81, 15);
+            label6.TabIndex = 12;
+            label6.Text = "Temp Folder 2";
+            // 
+            // TempFolderTextBox2
+            // 
+            TempFolderTextBox2.Location = new Point(109, 156);
+            TempFolderTextBox2.Name = "TempFolderTextBox2";
+            TempFolderTextBox2.Size = new Size(454, 23);
+            TempFolderTextBox2.TabIndex = 11;
             // 
             // PrintFileInfoCheckBox
             // 
-            this.PrintFileInfoCheckBox.AutoSize = true;
-            this.PrintFileInfoCheckBox.Location = new System.Drawing.Point(212, 100);
-            this.PrintFileInfoCheckBox.Name = "PrintFileInfoCheckBox";
-            this.PrintFileInfoCheckBox.Size = new System.Drawing.Size(96, 19);
-            this.PrintFileInfoCheckBox.TabIndex = 10;
-            this.PrintFileInfoCheckBox.Text = "Print File Info";
-            this.PrintFileInfoCheckBox.UseVisualStyleBackColor = true;
+            PrintFileInfoCheckBox.AutoSize = true;
+            PrintFileInfoCheckBox.Location = new Point(212, 100);
+            PrintFileInfoCheckBox.Name = "PrintFileInfoCheckBox";
+            PrintFileInfoCheckBox.Size = new Size(96, 19);
+            PrintFileInfoCheckBox.TabIndex = 10;
+            PrintFileInfoCheckBox.Text = "Print File Info";
+            PrintFileInfoCheckBox.UseVisualStyleBackColor = true;
             // 
             // CancelButton
             // 
-            this.CancelButton.Location = new System.Drawing.Point(438, 216);
-            this.CancelButton.Name = "CancelButton";
-            this.CancelButton.Size = new System.Drawing.Size(75, 23);
-            this.CancelButton.TabIndex = 9;
-            this.CancelButton.Text = "Cancel";
-            this.CancelButton.UseVisualStyleBackColor = true;
-            this.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
+            CancelButton.Location = new Point(438, 216);
+            CancelButton.Name = "CancelButton";
+            CancelButton.Size = new Size(75, 23);
+            CancelButton.TabIndex = 9;
+            CancelButton.Text = "Cancel";
+            CancelButton.UseVisualStyleBackColor = true;
+            CancelButton.Click += CancelButton_Click;
             // 
             // SaveButton
             // 
-            this.SaveButton.Location = new System.Drawing.Point(519, 216);
-            this.SaveButton.Name = "SaveButton";
-            this.SaveButton.Size = new System.Drawing.Size(75, 23);
-            this.SaveButton.TabIndex = 8;
-            this.SaveButton.Text = "Save";
-            this.SaveButton.UseVisualStyleBackColor = true;
-            this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
+            SaveButton.Location = new Point(519, 216);
+            SaveButton.Name = "SaveButton";
+            SaveButton.Size = new Size(75, 23);
+            SaveButton.TabIndex = 8;
+            SaveButton.Text = "Save";
+            SaveButton.UseVisualStyleBackColor = true;
+            SaveButton.Click += SaveButton_Click;
             // 
             // WatchedFolderButton
             // 
-            this.WatchedFolderButton.Location = new System.Drawing.Point(569, 11);
-            this.WatchedFolderButton.Name = "WatchedFolderButton";
-            this.WatchedFolderButton.Size = new System.Drawing.Size(25, 23);
-            this.WatchedFolderButton.TabIndex = 8;
-            this.WatchedFolderButton.Text = "...";
-            this.WatchedFolderButton.UseVisualStyleBackColor = true;
-            this.WatchedFolderButton.Click += new System.EventHandler(this.WatchedFolderButton_Click);
+            WatchedFolderButton.Location = new Point(569, 11);
+            WatchedFolderButton.Name = "WatchedFolderButton";
+            WatchedFolderButton.Size = new Size(25, 23);
+            WatchedFolderButton.TabIndex = 8;
+            WatchedFolderButton.Text = "...";
+            WatchedFolderButton.UseVisualStyleBackColor = true;
+            WatchedFolderButton.Click += WatchedFolderButton_Click;
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(13, 19);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(90, 15);
-            this.label3.TabIndex = 7;
-            this.label3.Text = "Watched Folder";
+            label3.AutoSize = true;
+            label3.Location = new Point(13, 19);
+            label3.Name = "label3";
+            label3.Size = new Size(90, 15);
+            label3.TabIndex = 7;
+            label3.Text = "Watched Folder";
             // 
             // WatchedFolderTextBox
             // 
-            this.WatchedFolderTextBox.Location = new System.Drawing.Point(109, 11);
-            this.WatchedFolderTextBox.Name = "WatchedFolderTextBox";
-            this.WatchedFolderTextBox.Size = new System.Drawing.Size(454, 23);
-            this.WatchedFolderTextBox.TabIndex = 6;
+            WatchedFolderTextBox.Location = new Point(109, 11);
+            WatchedFolderTextBox.Name = "WatchedFolderTextBox";
+            WatchedFolderTextBox.Size = new Size(454, 23);
+            WatchedFolderTextBox.TabIndex = 6;
             // 
             // TempFolderButton
             // 
-            this.TempFolderButton.Location = new System.Drawing.Point(569, 42);
-            this.TempFolderButton.Name = "TempFolderButton";
-            this.TempFolderButton.Size = new System.Drawing.Size(25, 23);
-            this.TempFolderButton.TabIndex = 5;
-            this.TempFolderButton.Text = "...";
-            this.TempFolderButton.UseVisualStyleBackColor = true;
-            this.TempFolderButton.Click += new System.EventHandler(this.TempFolderButton_Click);
+            TempFolderButton.Location = new Point(569, 42);
+            TempFolderButton.Name = "TempFolderButton";
+            TempFolderButton.Size = new Size(25, 23);
+            TempFolderButton.TabIndex = 5;
+            TempFolderButton.Text = "...";
+            TempFolderButton.UseVisualStyleBackColor = true;
+            TempFolderButton.Click += TempFolderButton_Click;
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(61, 79);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(42, 15);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "Printer";
+            label2.AutoSize = true;
+            label2.Location = new Point(61, 79);
+            label2.Name = "label2";
+            label2.Size = new Size(42, 15);
+            label2.TabIndex = 4;
+            label2.Text = "Printer";
             // 
             // AllowTabloidCheckBox
             // 
-            this.AllowTabloidCheckBox.AutoSize = true;
-            this.AllowTabloidCheckBox.Location = new System.Drawing.Point(109, 100);
-            this.AllowTabloidCheckBox.Name = "AllowTabloidCheckBox";
-            this.AllowTabloidCheckBox.Size = new System.Drawing.Size(97, 19);
-            this.AllowTabloidCheckBox.TabIndex = 3;
-            this.AllowTabloidCheckBox.Text = "Allow Tabloid";
-            this.AllowTabloidCheckBox.UseVisualStyleBackColor = true;
+            AllowTabloidCheckBox.AutoSize = true;
+            AllowTabloidCheckBox.Location = new Point(109, 100);
+            AllowTabloidCheckBox.Name = "AllowTabloidCheckBox";
+            AllowTabloidCheckBox.Size = new Size(97, 19);
+            AllowTabloidCheckBox.TabIndex = 3;
+            AllowTabloidCheckBox.Text = "Allow Tabloid";
+            AllowTabloidCheckBox.UseVisualStyleBackColor = true;
             // 
             // PrinterListComboBox
             // 
-            this.PrinterListComboBox.FormattingEnabled = true;
-            this.PrinterListComboBox.Location = new System.Drawing.Point(109, 71);
-            this.PrinterListComboBox.Name = "PrinterListComboBox";
-            this.PrinterListComboBox.Size = new System.Drawing.Size(454, 23);
-            this.PrinterListComboBox.TabIndex = 2;
+            PrinterListComboBox.FormattingEnabled = true;
+            PrinterListComboBox.Location = new Point(109, 71);
+            PrinterListComboBox.Name = "PrinterListComboBox";
+            PrinterListComboBox.Size = new Size(454, 23);
+            PrinterListComboBox.TabIndex = 2;
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(31, 50);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(72, 15);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Temp Folder";
+            label1.AutoSize = true;
+            label1.Location = new Point(31, 50);
+            label1.Name = "label1";
+            label1.Size = new Size(72, 15);
+            label1.TabIndex = 1;
+            label1.Text = "Temp Folder";
             // 
             // TempFolderTextBox
             // 
-            this.TempFolderTextBox.Location = new System.Drawing.Point(109, 42);
-            this.TempFolderTextBox.Name = "TempFolderTextBox";
-            this.TempFolderTextBox.Size = new System.Drawing.Size(454, 23);
-            this.TempFolderTextBox.TabIndex = 0;
+            TempFolderTextBox.Location = new Point(109, 42);
+            TempFolderTextBox.Name = "TempFolderTextBox";
+            TempFolderTextBox.Size = new Size(454, 23);
+            TempFolderTextBox.TabIndex = 0;
             // 
             // MainBGW
             // 
-            this.MainBGW.WorkerReportsProgress = true;
-            this.MainBGW.WorkerSupportsCancellation = true;
-            this.MainBGW.DoWork += new System.ComponentModel.DoWorkEventHandler(this.MainBGW_DoWork);
-            this.MainBGW.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.MainBGW_ProgressChanged);
-            this.MainBGW.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.MainBGW_RunWorkerCompleted);
+            MainBGW.WorkerReportsProgress = true;
+            MainBGW.WorkerSupportsCancellation = true;
+            MainBGW.DoWork += MainBGW_DoWork;
+            MainBGW.ProgressChanged += MainBGW_ProgressChanged;
+            MainBGW.RunWorkerCompleted += MainBGW_RunWorkerCompleted;
+            // 
+            // MainTimer
+            // 
+            MainTimer.Interval = 600000;
+            MainTimer.Tick += hotFolderParse;
             // 
             // TrayIcon
             // 
-            this.TrayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("TrayIcon.Icon")));
-            this.TrayIcon.Text = "Windows Printer Hotfolder";
-            this.TrayIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.TrayIcon_MouseDoubleClick);
+            TrayIcon.Icon = (Icon)resources.GetObject("TrayIcon.Icon");
+            TrayIcon.Text = "Windows Printer Hotfolder";
+            TrayIcon.MouseDoubleClick += TrayIcon_MouseDoubleClick;
+            // 
+            // MainTimer2
+            // 
+            MainTimer2.Interval = 600000;
+            MainTimer2.Tick += hotFolderParse2;
+            // 
+            // MainBGW2
+            // 
+            MainBGW2.WorkerReportsProgress = true;
+            MainBGW2.WorkerSupportsCancellation = true;
+            MainBGW2.DoWork += MainBGW2_DoWork;
+            MainBGW2.ProgressChanged += MainBGW2_ProgressChanged;
+            MainBGW2.RunWorkerCompleted += MainBGW2_RunWorkerCompleted;
+            // 
+            // MainProgressBar2
+            // 
+            MainProgressBar2.Location = new Point(12, 316);
+            MainProgressBar2.Name = "MainProgressBar2";
+            MainProgressBar2.Size = new Size(610, 12);
+            MainProgressBar2.TabIndex = 8;
+            // 
+            // MainRichTextBox
+            // 
+            MainRichTextBox.Location = new Point(12, 41);
+            MainRichTextBox.Name = "MainRichTextBox";
+            MainRichTextBox.Size = new Size(610, 126);
+            MainRichTextBox.TabIndex = 3;
+            MainRichTextBox.Text = "";
+            MainRichTextBox.TextChanged += MainRichTextBox_TextChanged;
+            // 
+            // MainRichTextBox2
+            // 
+            MainRichTextBox2.Location = new Point(12, 171);
+            MainRichTextBox2.Name = "MainRichTextBox2";
+            MainRichTextBox2.Size = new Size(610, 126);
+            MainRichTextBox2.TabIndex = 12;
+            MainRichTextBox2.Text = "";
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(634, 340);
-            this.Controls.Add(this.SettingsPanel);
-            this.Controls.Add(this.SettingButton);
-            this.Controls.Add(this.MainProgressBar);
-            this.Controls.Add(this.MainRichTextBox);
-            this.Controls.Add(this.ClearButton);
-            this.Controls.Add(this.StopButton);
-            this.Controls.Add(this.StartButton);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximizeBox = false;
-            this.Name = "Form1";
-            this.Text = "Windows Printer Hotfolder";
-            this.Resize += new System.EventHandler(this.Form1_Resize);
-            this.SettingsPanel.ResumeLayout(false);
-            this.SettingsPanel.PerformLayout();
-            this.ResumeLayout(false);
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(634, 340);
+            Controls.Add(SettingsPanel);
+            Controls.Add(MainProgressBar2);
+            Controls.Add(SettingButton);
+            Controls.Add(MainProgressBar);
+            Controls.Add(ClearButton);
+            Controls.Add(StopButton);
+            Controls.Add(StartButton);
+            Controls.Add(MainRichTextBox);
+            Controls.Add(MainRichTextBox2);
+            Icon = (Icon)resources.GetObject("$this.Icon");
+            MaximizeBox = false;
+            Name = "Form1";
+            Text = "Windows Printer Hotfolder";
+            Resize += Form1_Resize;
+            SettingsPanel.ResumeLayout(false);
+            SettingsPanel.PerformLayout();
+            ResumeLayout(false);
         }
 
         #endregion
@@ -287,7 +436,6 @@
         private Button StartButton;
         private Button StopButton;
         private Button ClearButton;
-        private RichTextBox MainRichTextBox;
         private ProgressBar MainProgressBar;
         private Button SettingButton;
         private Panel SettingsPanel;
@@ -308,5 +456,22 @@
         private System.Windows.Forms.Timer MainTimer;
         private NotifyIcon TrayIcon;
         private CheckBox PrintFileInfoCheckBox;
+        private CheckBox PrintFileInfoCheckBox2;
+        private Button WatchedFolderButton2;
+        private Label label4;
+        private TextBox WatchedFolderTextBox2;
+        private Button TempFolderButton2;
+        private Label label5;
+        private CheckBox AllowTabloidCheckBox2;
+        private ComboBox PrinterListComboBox2;
+        private Label label6;
+        private TextBox TempFolderTextBox2;
+        private System.Windows.Forms.Timer MainTimer2;
+        private FolderBrowserDialog TempFolderDialog2;
+        private FolderBrowserDialog WatchedFolderDialog2;
+        private System.ComponentModel.BackgroundWorker MainBGW2;
+        private ProgressBar MainProgressBar2;
+        private RichTextBox MainRichTextBox;
+        private RichTextBox MainRichTextBox2;
     }
 }
