@@ -272,7 +272,7 @@ namespace WindowsPrinterHotfolder
             doc1.Close();
 
             SendToPrinter(Path.Combine(Settings.Default.TempFolder, Path.GetFileName(passedFile)), false, tabloid);
-        }
+        }        
 
         public void MakePrintPdf2(string passedFile)
         {
@@ -387,7 +387,7 @@ namespace WindowsPrinterHotfolder
             }
             doc1.Close();
 
-            SendToPrinter(Path.Combine(Settings.Default.TempFolder2, Path.GetFileName(passedFile)), false, tabloid);
+            SendToPrinter2(Path.Combine(Settings.Default.TempFolder2, Path.GetFileName(passedFile)), false, tabloid);
         }
 
         public void SendToPrinter(string printFile, bool fit, bool tabloid)
@@ -412,6 +412,34 @@ namespace WindowsPrinterHotfolder
                 switches.Add("-dNumCopies=1");
                 switches.Add("-sDEVICE=mswinpr2");
                 switches.Add(Convert.ToString("-sOutputFile=%printer%") + Settings.Default.Printer);
+                switches.Add("-f");
+                switches.Add(printFile);
+                processor.StartProcessing(switches.ToArray(), null);
+            }
+        }
+
+        public void SendToPrinter2(string printFile, bool fit, bool tabloid)
+        {
+            GhostscriptVersionInfo gvi = new GhostscriptVersionInfo(new Version(0, 0, 0), System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "References", "gsdll64.dll"), string.Empty, GhostscriptLicense.GPL);
+            using (GhostscriptProcessor processor = new GhostscriptProcessor(gvi))
+            {
+                List<string> switches = new List<string>();
+                switches.Add("-dPrinted");
+                switches.Add("-dBATCH");
+                switches.Add("-dNOPAUSE");
+                switches.Add("-dNOSAFER");
+                if (tabloid)
+                {
+                    switches.Add("-g792x1224");
+                }
+                if (fit)
+                {
+                    switches.Add("-dPDFFitPage");
+
+                }
+                switches.Add("-dNumCopies=1");
+                switches.Add("-sDEVICE=mswinpr2");
+                switches.Add(Convert.ToString("-sOutputFile=%printer%") + Settings.Default.Printer2);
                 switches.Add("-f");
                 switches.Add(printFile);
                 processor.StartProcessing(switches.ToArray(), null);
